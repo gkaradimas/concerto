@@ -1,5 +1,7 @@
 class TomIndicesFields < ActiveRecord::Migration
   def up
+    drop_table :kinds
+  
     change_column :contents, :name, :string, :null => false
     change_column :contents, :type, :string, :null => false
     change_column :contents, :duration, :integer, :null => false
@@ -55,7 +57,30 @@ class TomIndicesFields < ActiveRecord::Migration
   end
   
   end
-
+   
+  #Despite the support in Rails 3.1 for reversible migrations via the "change" method, column removals and other
+  #one-way methods cannot be revered and give the IrreversibleMigration Exception. Thus, a down method is 
+  #defined here. It's primarily concerned with rolling back substantive changes, and won't bother will the null defaults
   def down
+    remove_column :contents, :public
+    remove_index :contents, :publuc
+    add_column :contents, :kind_id, :integer
+    
+    remove_column :groups, :public
+    remove_index :groups, :public
+    
+    remove_column :memberships, :admin
+    remove_column :memberships, :moderator
+    remove_index :memberships, :admin
+    remove_index :memberships, :moderator
+    add_column :memberships, :is_leader, :boolean
+    
+    remove_column :users, :super_user
+    remove_index :users, :super_user
+    
+    create_table :kinds do |t|
+      t.string :name
+      t.timestamps
+    end
   end
 end

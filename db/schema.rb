@@ -15,7 +15,6 @@ ActiveRecord::Schema.define(:version => 20110618035742) do
   create_table "contents", :force => true do |t|
     t.string   "name",                         :null => false
     t.integer  "duration",                     :null => false
-    t.text     "data"
     t.datetime "start_time"
     t.datetime "end_time"
     t.integer  "user_id",                      :null => false
@@ -57,12 +56,6 @@ ActiveRecord::Schema.define(:version => 20110618035742) do
 
   add_index "groups", ["name"], :name => "index_groups_on_name"
   add_index "groups", ["public"], :name => "index_groups_on_public"
-
-  create_table "kinds", :force => true do |t|
-    t.string   "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
 
   create_table "media", :force => true do |t|
     t.integer  "attachable_id"
