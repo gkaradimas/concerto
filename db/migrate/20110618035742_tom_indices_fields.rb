@@ -8,7 +8,7 @@ class TomIndicesFields < ActiveRecord::Migration
     change_column :contents, :end_time, :datetime, :null => true     
     change_table :contents do |t|
       t.boolean :public, :default => 1, :null => false
-      t.remove :data, :kind_id
+      t.remove :kind_id
       t.index :name
       t.index :type
       t.index :user_id

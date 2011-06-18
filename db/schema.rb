@@ -15,6 +15,7 @@ ActiveRecord::Schema.define(:version => 20110618035742) do
   create_table "contents", :force => true do |t|
     t.string   "name",                         :null => false
     t.integer  "duration",                     :null => false
+    t.text     "data"
     t.datetime "start_time"
     t.datetime "end_time"
     t.integer  "user_id",                      :null => false
