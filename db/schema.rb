@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110618195753) do
+ActiveRecord::Schema.define(:version => 20110619182653) do
 
   create_table "contents", :force => true do |t|
     t.string   "name",                         :null => false
@@ -35,11 +35,17 @@ ActiveRecord::Schema.define(:version => 20110618195753) do
   create_table "feeds", :force => true do |t|
     t.string   "name"
     t.text     "description"
-    t.integer  "parent_id"
     t.integer  "group_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "read_only",   :default => false, :null => false
+    t.boolean  "public",      :default => true,  :null => false
   end
+
+  add_index "feeds", ["group_id"], :name => "index_feeds_on_group_id"
+  add_index "feeds", ["name"], :name => "index_feeds_on_name"
+  add_index "feeds", ["public"], :name => "index_feeds_on_public"
+  add_index "feeds", ["read_only"], :name => "index_feeds_on_read_only"
 
   create_table "fields", :force => true do |t|
     t.string   "name"
