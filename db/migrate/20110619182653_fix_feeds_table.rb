@@ -3,7 +3,7 @@ class FixFeedsTable < ActiveRecord::Migration
     remove_column :feeds, :parent_id
     change_table :feeds do |t|
       t.boolean :is_read_only, :default => 0, :null => false
-      t.boolean :_ispublic, :default => 1, :null => false 
+      t.boolean :is_public, :default => 1, :null => false 
       t.index :name
       t.index :group_id
       t.index :is_read_only
