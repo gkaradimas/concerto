@@ -38,8 +38,6 @@ ActiveRecord::Schema.define(:version => 20110625050043) do
     t.integer  "group_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "is_read_only",   :default => false, :null => false
-    t.boolean  "is_public",      :default => true,  :null => false
     t.boolean  "is_viewable",    :default => true,  :null => false
     t.boolean  "is_submittable", :default => true,  :null => false
   end
