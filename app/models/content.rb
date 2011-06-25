@@ -1,26 +1,22 @@
 class Content < ActiveRecord::Base
   belongs_to :user
-  belongs_to :kind
   has_many :submissions, :dependent => :destroy
   has_many :feeds, :through => :submissions
-  has_many :media, :as => :attachable
   
-  accepts_nested_attributes_for :media
   accepts_nested_attributes_for :submissions
 
   #Validations
   validates :name, :presence => true
-  #validates :kind, :presence => true, :associated => true
   validates :user, :presence => true, :associated => true
 
   #Easily query for active, expired, or future content
-  scope :expired, where("end_time < :now", {:now => Time.now})
-  scope :future, where("start_time > :now", {:now => Time.now})
-  scope :active, where("(start_time IS NULL OR start_time < :now) AND (end_time IS NULL OR end_time > :now)", {:now => Time.now})
+  #scope :expired, where("end_time < :now", {:now => Time.now})
+  #scope :future, where("start_time > :now", {:now => Time.now})
+  #scope :active, where("(start_time IS NULL OR start_time < :now) AND (end_time IS NULL OR end_time > :now)", {:now => Time.now})
   
   #Scoped relations for feed approval states
   has_many :approved_feeds, :through => :submissions, :source => :feed, :conditions => {"submissions.moderation_flag" => true}
-  has_many :pending_feeds, :through => :submissions, :source => :feed, :conditions => "submissions.moderation_flag IS NULL"
+  has_many :pending_feeds, :through => :submissions, :source => :feed, :conditions => {"submissions.moderation_flag" => nil}
   has_many :denied_feeds, :through => :submissions, :source => :feed, :conditions => {"submissions.moderation_flag" => false}
 
   # Determine if content is active based on its start and end times.

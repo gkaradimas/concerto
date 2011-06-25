@@ -6,8 +6,16 @@ class Membership < ActiveRecord::Base
   validates :user, :presence => true, :associated => true
   validates :group, :presence => true, :associated => true
   validates_uniqueness_of :user_id, :scope => :group_id
-
-  #Scoping shortcuts for leaders/regular
-  scope :leader, where(:is_leader => true)
-  scope :regular, where(:is_leader => false)
+  
+  before_save :check_writable, :check_admins
+  
+  def check_writable
+    if self.group.memberships.count != 0 and !self.group.is_writable?
+      raise Group::PermissionDenied
+    end
+  end
+  
+  def check_admins
+    
+  end
 end
