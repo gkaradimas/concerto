@@ -20,11 +20,15 @@ class Group < ActiveRecord::Base
   end
 
   def is_admin?(user)
-    self.memberships.where(:user_id => user.id, :is_admin => true).exists?
+     self.memberships.where(:user_id => user.id, :is_admin => true).exists?
   end
 
   def is_moderator?(user)
-    self.memberships.where(:user_id => user.id, :is_moderator => true).exists?
+    self.is_admin?(user) or self.memberships.where(:user_id => user.id, :is_moderator => true).exists?
+  end
+
+  def is_readable?
+    true
   end
 
   def is_writable?
@@ -32,19 +36,14 @@ class Group < ActiveRecord::Base
     accessor.is_super_user? or self.is_admin?(accessor)
   end
 
-  def is_readable?
-    accessor = User.accessor
-    accessor.is_super_user? or self.is_member?(accessor)
-  end
-
-  def check_writable
-    if !self.is_writable?
+  def check_readable
+    if !self.is_readable?
       raise Group::PermissionDenied
     end
   end
 
-  def check_readable
-    if !self.is_readable?
+  def check_writable
+    if !self.is_writable?
       raise Group::PermissionDenied
     end
   end

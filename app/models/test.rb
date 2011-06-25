@@ -28,4 +28,5 @@ User.accessor = guest
 
 x = Group.find(1)
 
-#m.where([:user_id => 2, :is_admin => true, :is_moderator => true]).to_sql
+gX.is_moderator?(guest)
+gX.is_moderator?(u1)
