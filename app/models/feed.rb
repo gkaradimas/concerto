@@ -1,4 +1,6 @@
 class Feed < ActiveRecord::Base
+  class PermissionDenied < StardardError; end
+
   belongs_to :group
   has_many :submissions
   has_many :contents, :through => :submissions
@@ -13,8 +15,31 @@ class Feed < ActiveRecord::Base
   validates :name, :presence => true, :uniqueness => true
   validates :group, :presence => true, :associated => true
 
+  after_find :check_readable
+  before_save :check_writable
 
-  
+  def is_readable?
+    accessor = User.accessor
+    accessor.is_super_user? or self.group.is_member?(accessor)
+  end
+
+  def is_writable?
+    accessor = User.accessor
+    accessor.is_super_user? or self.group.is_admin?(accessor)
+  end
+
+  def check_readable
+    if !self.is_readable?
+      raise Feed::PermissionDenied
+    end
+  end
+
+  def check_writable
+    if !self.is_writable?
+      raise Feed::PermissionDenied
+    end
+  end
+
   #Feed Hierachy
   #belongs_to :parent, :class_name => "Feed"
   #has_many :children, :class_name => "Feed", :foreign_key => "parent_id"
