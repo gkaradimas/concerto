@@ -1,4 +1,6 @@
 class Content < ActiveRecord::Base
+  class PermissionDenied < StandardError; end
+
   belongs_to :user
   has_many :submissions, :dependent => :destroy
   has_many :feeds, :through => :submissions
@@ -18,6 +20,39 @@ class Content < ActiveRecord::Base
   has_many :approved_feeds, :through => :submissions, :source => :feed, :conditions => {"submissions.moderation_flag" => true}
   has_many :pending_feeds, :through => :submissions, :source => :feed, :conditions => {"submissions.moderation_flag" => nil}
   has_many :denied_feeds, :through => :submissions, :source => :feed, :conditions => {"submissions.moderation_flag" => false}
+
+  after_find :check_readable
+  before_save :check_writable
+
+  def is_readable?
+    if self.is_public?
+      true
+    else
+      self.submissions |submission| do
+        if submission.is_readable?(User.accessor)
+          return true
+        end
+      end
+      false
+    end
+  end
+
+  def is_writable?
+    accessor = User.accessor
+    accessor.is_super_user? or self.user == accessor    
+  end
+
+  def check_readable
+    if !self.is_readable?
+      raise Content::PermissionDenied
+    end
+  end
+
+  def check_writable
+    if !self.is_writable?
+      raise Content::PermissionDenied
+    end
+  end
 
   # Determine if content is active based on its start and end times.
   # Content is active if two conditions are met:

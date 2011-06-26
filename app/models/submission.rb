@@ -1,4 +1,6 @@
 class Submission < ActiveRecord::Base
+  class PermissionDenied < StandardError; end
+
   belongs_to :content
   belongs_to :feed
   belongs_to :moderator, :class_name => "User"
@@ -13,24 +15,51 @@ class Submission < ActiveRecord::Base
   #Scoping shortcuts for active/denied/pending
   scope :approved, where(:moderation_flag => true)
   scope :denied, where(:moderation_flag => false)
-  scope :pending, where("moderation_flag IS NULL")
+  scope :pending, where(:moderation_flag => nil)
+
+  after_find :check_readable
+  before_save :check_writable
+
+  def is_readable?
+    if self.is_approved?
+      self.feed.is_viewable? or self.feed.is_member?(User.accessor)
+    else
+      self.feed.is_moderator?(User.accessor)
+    end
+  end
+
+  def is_writable?
+    self.feed.is_moderator?(User.accessor)
+  end
+
+  def check_readable
+    if !self.is_readable?
+      raise Submission::PermissionDenied
+    end
+  end
+
+  def check_writable
+    if !self.is_writable?
+      raise Submission::PermissionDenied
+    end
+  end  
   
   # Test if the submission has been approved.
   # (moderation flag is true)
   def is_approved?
-    moderation_flag ? true : false
+    self.moderation_flag == true
   end
   
   # Test if the submission has been denied.
   # (moderation flag is false)
   def is_denied?
-    (moderation_flag == false) ? true : false
+    self.moderation_flag == false
   end
   
   # Test if the submission has not yet been moderated.
   # (moderation flag is nil)
   def is_pending?
-    moderation_flag.nil?
+    self.moderation_flag.nil?
   end
   
   # Approve a piece of content on a feed.  Must be 

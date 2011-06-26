@@ -26,7 +26,7 @@ m = gX.memberships
 
 User.accessor = guest
 
-x = Group.find(1)
+x = Group.find(1).memberships
 
 gX.is_moderator?(guest)
 gX.is_moderator?(u1)

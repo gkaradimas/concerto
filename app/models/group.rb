@@ -6,10 +6,10 @@ class Group < ActiveRecord::Base
   has_many :memberships, :dependent => :destroy
   has_many :users, :through => :memberships
   
+  after_find :check_readable
   before_update :check_writable
   before_create :check_guest_user
   after_create :add_initial_user
-  after_find :check_readable
 
   #Validations
   validates :name, :presence => true, :uniqueness => true
