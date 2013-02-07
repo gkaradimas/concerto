@@ -1,0 +1,8 @@
+# Gems for supporting external authentication (single sign on)
+# Rename this file to 'Gemfile-auth' and uncomment sections for your authentication strategy
+
+# External authentication support (REQUIRED for all strategies).
+# gem 'omniauth'
+
+# Central Authentication Service (http://www.jasig.org/cas) support
+# gem 'omniauth-cas'
