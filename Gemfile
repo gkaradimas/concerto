@@ -13,6 +13,11 @@ if File.exists?(basedir+'/Gemfile-reporting')
   eval File.read(basedir+'/Gemfile-reporting')
 end
 
+# Load the gems used for external authentication.
+if File.exists?(basedir+'/Gemfile-auth')
+  eval File.read(basedir+'/Gemfile-auth')
+end
+
 # The Gemfile-plugins gem list is managed by Concerto itself,
 # through the ConcertoPlugins controller.
 group :concerto_plugins do
