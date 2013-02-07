@@ -19,4 +19,6 @@
 # For additional configuration options and information, read https://github.com/dlindahl/omniauth-cas
 
 #require "omniauth-cas"
-#config.omniauth :cas, url: 'https://cas-auth.example.com/'
+#Rails.application.config.middleware.use OmniAuth::Builder do
+#  provider :cas, url: 'https://cas-auth.rpi.edu/cas/', login_url: '/cas/login', logout_url: '/cas/logout', service_validate_url: '/cas/serviceValidate'
+#end

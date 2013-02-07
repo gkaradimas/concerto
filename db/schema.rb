@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130111213722) do
+ActiveRecord::Schema.define(:version => 20130207165207) do
 
   create_table "concerto_configs", :force => true do |t|
     t.string  "key"
@@ -195,6 +195,8 @@ ActiveRecord::Schema.define(:version => 20130111213722) do
     t.string   "last_name"
     t.string   "locale"
     t.boolean  "is_admin",               :default => false
+    t.string   "provider"
+    t.string   "uid"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
